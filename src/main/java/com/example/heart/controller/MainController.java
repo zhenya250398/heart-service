@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.example.heart.imagecheck.ImageCheck.compare;
 import static com.example.heart.imagecheck.Resize.convert;
 import static com.example.heart.imagecheck.Resize.resize;
 
@@ -62,6 +63,7 @@ public class MainController {
             @RequestParam("file") MultipartFile mFile
     ) throws IOException {
         Heart heart = new Heart(text, user);
+        int similarity = 0;
 
         if (mFile != null && !mFile.getOriginalFilename().isEmpty()) {
             File uploadDir = new File(uploadPath);
@@ -72,20 +74,22 @@ public class MainController {
 
             File file = convert(mFile);
             BufferedImage inputImage = ImageIO.read(file);
-            inputImage = resize(inputImage,128,128);
+            similarity = compare(file);
+            if (similarity>=80) {
+                inputImage = resize(inputImage, 128, 128);
 
+                String uuidFile = UUID.randomUUID().toString();
+                String resultFilename = uuidFile + "." + mFile.getOriginalFilename();
 
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + mFile.getOriginalFilename();
+                File newFile = new File(uploadPath + "/" + resultFilename);
+                ImageIO.write(inputImage, "png", newFile);
 
-            File newFile = new File(uploadPath + "/" + resultFilename);
-            ImageIO.write(inputImage, "png", newFile);
-
-            heart.setFilename(resultFilename);
+                heart.setFilename(resultFilename);
+            }
         }
-
-        heartRepo.save(heart);
-
+        if(similarity>=80) {
+            heartRepo.save(heart);
+        }
         Iterable<Heart> hearts = heartRepo.findAll();
 
         model.put("hearts", hearts);
