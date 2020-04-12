@@ -75,6 +75,7 @@ public class MainController {
             File file = convert(mFile);
             BufferedImage inputImage = ImageIO.read(file);
             similarity = compare(file);
+            file.delete();
             if (similarity>=80) {
                 inputImage = resize(inputImage, 128, 128);
 
