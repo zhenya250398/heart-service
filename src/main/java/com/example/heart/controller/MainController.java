@@ -13,10 +13,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
+
+import static com.example.heart.imagecheck.ImageCheck.compare;
+import static com.example.heart.imagecheck.Resize.convert;
+import static com.example.heart.imagecheck.Resize.resize;
 
 @Controller
 public class MainController {
@@ -52,27 +60,37 @@ public class MainController {
             @AuthenticationPrincipal User user,
             @RequestParam String text,
             @RequestParam Map<String, Object> model,
-            @RequestParam("file") MultipartFile file
+            @RequestParam("file") MultipartFile mFile
     ) throws IOException {
         Heart heart = new Heart(text, user);
+        int similarity = 0;
 
-        if (file != null && !file.getOriginalFilename().isEmpty()) {
+        if (mFile != null && !mFile.getOriginalFilename().isEmpty()) {
             File uploadDir = new File(uploadPath);
 
             if (!uploadDir.exists()) {
                 uploadDir.mkdir();
             }
 
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + file.getOriginalFilename();
+            File file = convert(mFile);
+            BufferedImage inputImage = ImageIO.read(file);
+            similarity = compare(file);
+            file.delete();
+            if (similarity>=80) {
+                inputImage = resize(inputImage, 128, 128);
 
-            file.transferTo(new File(uploadPath + "/" + resultFilename));
+                String uuidFile = UUID.randomUUID().toString();
+                String resultFilename = uuidFile + "." + mFile.getOriginalFilename();
 
-            heart.setFilename(resultFilename);
+                File newFile = new File(uploadPath + "/" + resultFilename);
+                ImageIO.write(inputImage, "png", newFile);
+
+                heart.setFilename(resultFilename);
+            }
         }
-
-        heartRepo.save(heart);
-
+        if(similarity>=80) {
+            heartRepo.save(heart);
+        }
         Iterable<Heart> hearts = heartRepo.findAll();
 
         model.put("hearts", hearts);
