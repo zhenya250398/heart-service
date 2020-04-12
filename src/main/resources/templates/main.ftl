@@ -13,6 +13,7 @@
         <button type="submit">Добавить</button>
     </form>
 </div>
+    <a href="/processing">обработать</a>
 <div>Список сообщений</div>
 <form method="get" action="/main">
     <input type="text" name="filter" value="${filter?if_exists}">
