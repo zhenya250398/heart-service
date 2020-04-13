@@ -72,15 +72,14 @@ public class MainController {
                 uploadDir.mkdir();
             }
 
-            File file = convert(mFile);
+            String uuidFile = UUID.randomUUID().toString();
+            String resultFilename = uuidFile + "." + mFile.getOriginalFilename();
+            File file = convert(mFile,resultFilename);
             BufferedImage inputImage = ImageIO.read(file);
             similarity = compare(file);
             file.delete();
             if (similarity>=80) {
                 inputImage = resize(inputImage, 128, 128);
-
-                String uuidFile = UUID.randomUUID().toString();
-                String resultFilename = uuidFile + "." + mFile.getOriginalFilename();
 
                 File newFile = new File(uploadPath + "/" + resultFilename);
                 ImageIO.write(inputImage, "png", newFile);
