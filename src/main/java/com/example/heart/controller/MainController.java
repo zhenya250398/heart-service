@@ -78,7 +78,7 @@ public class MainController {
             BufferedImage inputImage = ImageIO.read(file);
             similarity = compare(file);
             file.delete();
-            if (similarity>=80) {
+            if (similarity>=50) {
                 inputImage = resize(inputImage, 128, 128);
 
                 File newFile = new File(uploadPath + "/" + resultFilename);
