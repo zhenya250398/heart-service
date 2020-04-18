@@ -87,7 +87,7 @@ public class MainController {
                 heart.setFilename(resultFilename);
             }
         }
-        if(similarity>=80) {
+        if(similarity>=50) {
             heartRepo.save(heart);
         }
         Iterable<Heart> hearts = heartRepo.findAll();
