@@ -79,7 +79,7 @@ public class MainController {
             similarity = compare(file);
             file.delete();
             if (similarity>=50) {
-                inputImage = resize(inputImage, 128, 128);
+                inputImage = resize(inputImage, 224, 224);
 
                 File newFile = new File(uploadPath + "/" + resultFilename);
                 ImageIO.write(inputImage, "png", newFile);
