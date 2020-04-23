@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -72,15 +70,14 @@ public class MainController {
                 uploadDir.mkdir();
             }
 
-            File file = convert(mFile);
+            String uuidFile = UUID.randomUUID().toString();
+            String resultFilename = uuidFile + "." + mFile.getOriginalFilename();
+            File file = convert(mFile,resultFilename);
             BufferedImage inputImage = ImageIO.read(file);
             similarity = compare(file);
             file.delete();
-            if (similarity>=80) {
-                inputImage = resize(inputImage, 128, 128);
-
-                String uuidFile = UUID.randomUUID().toString();
-                String resultFilename = uuidFile + "." + mFile.getOriginalFilename();
+            if (similarity>=50) {
+                inputImage = resize(inputImage, 224, 224);
 
                 File newFile = new File(uploadPath + "/" + resultFilename);
                 ImageIO.write(inputImage, "png", newFile);
@@ -88,7 +85,7 @@ public class MainController {
                 heart.setFilename(resultFilename);
             }
         }
-        if(similarity>=80) {
+        if(similarity>=50) {
             heartRepo.save(heart);
         }
         Iterable<Heart> hearts = heartRepo.findAll();

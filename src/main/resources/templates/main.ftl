@@ -28,6 +28,10 @@
             <img src="/img/${heart.filename}">
         </#if>
     </div>
+    <form method="get" action="/processing">
+        <input type="hidden" name="id" value="${heart.id}" />
+        <button type="submit">Обработать</button>
+    </form>
 </div>
 <#else>
 No heart

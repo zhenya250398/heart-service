@@ -23,8 +23,8 @@ public class Resize {
 
     }
 
-    public static File convert(MultipartFile file) throws IOException {
-        File convFile = new File(file.getOriginalFilename());
+    public static File convert(MultipartFile file,String fleName) throws IOException {
+        File convFile = new File(fleName);
         convFile.createNewFile();
         FileOutputStream fos = new FileOutputStream(convFile);
         fos.write(file.getBytes());
