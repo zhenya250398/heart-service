@@ -8,5 +8,6 @@ import java.util.List;
 public interface HeartRepo extends CrudRepository<Heart, Long> {
 
     List<Heart> findByText(String text);
+    List<Heart> findById(int id);
 
 }
