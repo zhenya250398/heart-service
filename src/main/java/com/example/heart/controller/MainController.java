@@ -28,31 +28,31 @@ import static com.example.heart.imagecheck.Resize.resize;
 public class MainController {
     @Autowired
     private HeartRepo heartRepo;
-
+    
     @Value("${upload.path}")
     private String uploadPath;
-
+    
     @GetMapping("/")
     public String greeting(Map<String, Object> model) {
         return "greeting";
     }
-
+    
     @GetMapping("/main")
     public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
         Iterable<Heart> hearts = heartRepo.findAll();
-
+        
         if (filter != null && !filter.isEmpty()) {
             hearts = heartRepo.findByText(filter);
         } else {
             hearts = heartRepo.findAll();
         }
-
+        
         model.addAttribute("hearts", hearts);
         model.addAttribute("filter", filter);
-
+        
         return "main";
     }
-
+    
     @PostMapping("/main")
     public String add(
             @AuthenticationPrincipal User user,
@@ -62,14 +62,14 @@ public class MainController {
     ) throws IOException {
         Heart heart = new Heart(text, user);
         int similarity = 0;
-
+        
         if (mFile != null && !mFile.getOriginalFilename().isEmpty()) {
             File uploadDir = new File(uploadPath);
-
+            
             if (!uploadDir.exists()) {
                 uploadDir.mkdir();
             }
-
+            
             String uuidFile = UUID.randomUUID().toString();
             String resultFilename = uuidFile + "." + mFile.getOriginalFilename();
             File file = convert(mFile,resultFilename);
@@ -78,10 +78,10 @@ public class MainController {
             file.delete();
             if (similarity>=50) {
                 inputImage = resize(inputImage, 224, 224);
-
+                
                 File newFile = new File(uploadPath + "/" + resultFilename);
                 ImageIO.write(inputImage, "png", newFile);
-
+                
                 heart.setFilename(resultFilename);
             }
         }
@@ -89,9 +89,9 @@ public class MainController {
             heartRepo.save(heart);
         }
         Iterable<Heart> hearts = heartRepo.findAll();
-
+        
         model.put("hearts", hearts);
-
+        
         return "main";
     }
 }

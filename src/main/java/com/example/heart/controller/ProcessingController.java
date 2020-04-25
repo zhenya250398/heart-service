@@ -16,10 +16,10 @@ import java.io.IOException;
 public class ProcessingController {
     @Autowired
     private HeartRepo heartRepo;
-
+    
     @GetMapping("/processing")
-    public String registration(@RequestParam("id") int hId, Model model) throws IOException {
-        CSVReader reader = new CSVReader(new FileReader("C:/Users/zhenya/uploadImages/output.csv"));
+    public String processing(@RequestParam("id") int hId, Model model) throws IOException {
+        CSVReader reader = new CSVReader(new FileReader("C:/Users/Home/uploadImages/output.csv"));
         String[] line;
         while ((line = reader.readNext()) != null) {
             System.out.println(line[0]+","+line[1]);
