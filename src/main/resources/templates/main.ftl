@@ -30,6 +30,7 @@
     </div>
     <form method="get" action="/processing">
         <input type="hidden" name="id" value="${heart.id}" />
+        <input type="hidden" name="name" value="${heart.filename}" />
         <button type="submit">Обработать</button>
     </form>
 </div>
