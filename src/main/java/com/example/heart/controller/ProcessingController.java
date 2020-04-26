@@ -2,7 +2,6 @@ package com.example.heart.controller;
 
 import com.example.heart.domain.Heart;
 import com.example.heart.repos.HeartRepo;
-import com.opencsv.CSVReader;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 
 @Controller
@@ -37,11 +35,6 @@ public class ProcessingController {
         builder.redirectError();
         int newProcess = builder.start().waitFor();
 
-        CSVReader reader = new CSVReader(new FileReader(uploadPath+"/segmentation/"+fileName+"/output.csv"));
-        String[] line;
-        while ((line = reader.readNext()) != null) {
-            System.out.println(line[0]+","+line[1]);
-        }
         Iterable<Heart> hearts = heartRepo.findById(hId);
         model.addAttribute("hearts", hearts);
         delete(new File(uploadPath+"/segmentation/"+fileName+"/processing.py"));
