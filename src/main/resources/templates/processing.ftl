@@ -58,9 +58,9 @@
 
         //Закрасить область по исходным данным output.csv файла
         var request = new XMLHttpRequest();
-        var path = "output.csv";
+        var path = "/out/output.csv";
         request.open("GET", path, false);
-        request.send(null);
+        request.send();
 
         var csvData = new Array();
         var jsonObject = request.responseText.split(/\r?\n|\r/);
@@ -71,7 +71,7 @@
 
         const ctx = canvas.getContext("2d");
         ctx.beginPath();
-        ctx.moveTo(csvData[1][1],csvData[0][1]);
+        ctx.moveTo(csvData[0][1],csvData[0][0]);
         for(var i = 0; i < csvData.length; i++){
             if(i !== 0)
                 ctx.lineTo(csvData[i][1],csvData[i][0]);
