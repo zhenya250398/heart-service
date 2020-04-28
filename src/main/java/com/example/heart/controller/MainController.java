@@ -49,7 +49,6 @@ public class MainController {
 
         model.addAttribute("hearts", hearts);
         model.addAttribute("filter", filter);
-
         return "main";
     }
 
