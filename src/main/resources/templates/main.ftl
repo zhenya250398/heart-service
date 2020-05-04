@@ -4,11 +4,11 @@
 
 <@c.page>
     <div>
+        <label>Пользователь ${name}</label>
         <@l.logout />
         <#if isAdmin>
             <span><a href="/user">Список пользователей</a></span>
         </#if>
-        <div>Пользователь ${name}</div>
     </div>
     <div>
         <form method="post" enctype="multipart/form-data">
@@ -18,7 +18,7 @@
             <button type="submit">Добавить</button>
         </form>
     </div>
-    <div>Список сообщений</div>
+    <div>Список изображений</div>
     <form method="get" action="/main">
         <input type="text" name="filter" value="${filter?if_exists}">
         <button type="submit">Найти</button>
@@ -38,6 +38,12 @@
                     <input type="hidden" name="id" value="${heart.id}"/>
                     <input type="hidden" name="name" value="${heart.filename}"/>
                     <button type="submit">Обработать</button>
+                </form>
+                <form method="post" action="/delete">
+                    <input type="hidden" name="id" value="${heart.id}"/>
+                    <input type="hidden" name="name" value="${heart.filename}"/>
+                    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                    <button type="submit">Удалить</button>
                 </form>
             </div>
         </#if>

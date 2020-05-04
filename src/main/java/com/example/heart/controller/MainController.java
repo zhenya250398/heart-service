@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.example.heart.FilesActions.delete;
 import static com.example.heart.imagecheck.ImageCheck.compare;
 import static com.example.heart.imagecheck.Resize.convert;
 import static com.example.heart.imagecheck.Resize.resize;
@@ -50,6 +52,17 @@ public class MainController {
         model.addAttribute("hearts", hearts);
         model.addAttribute("filter", filter);
         return "main";
+    }
+
+    @PostMapping("/delete")
+    @Transactional
+    public String deleteImage(@RequestParam("name") String fileName,@RequestParam("id") int hId) {
+        long del = heartRepo.deleteById(hId);
+        File inputFile = new File(uploadPath+"/"+fileName);
+        File outputFile = new File(uploadPath+"/segmentation/"+fileName);
+        if(inputFile!=null) delete(inputFile);
+        if(outputFile!=null) delete(outputFile);
+        return "redirect:/main";
     }
 
     @PostMapping("/main")

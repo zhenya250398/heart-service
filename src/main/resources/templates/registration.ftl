@@ -2,8 +2,8 @@
 <#import "parts/login.ftl" as l>
 
 <@c.page>
-Add new user
+Страница регистрации
 ${message?if_exists}
 <@l.login "/registration" />
-<a href="/login">login</a>
+<a href="/login">Перейти к авторизации</a>
 </@c.page>

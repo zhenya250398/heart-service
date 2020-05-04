@@ -2,7 +2,6 @@ package com.example.heart.controller;
 
 import com.example.heart.domain.Heart;
 import com.example.heart.repos.HeartRepo;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -12,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.File;
 import java.io.IOException;
+
+import static com.example.heart.FilesActions.copy;
+import static com.example.heart.FilesActions.delete;
 
 @Controller
 public class ProcessingController {
@@ -40,24 +42,5 @@ public class ProcessingController {
         delete(new File(uploadPath+"/segmentation/"+fileName+"/processing.py"));
         return "processing";
     }
-    public void delete(File file)
-    {
-        if(!file.exists())
-            return;
-        if(file.isDirectory())
-        {
-            for(File f : file.listFiles())
-                delete(f);
-            file.delete();
-        }
-        else
-        {
-            file.delete();
-        }
-    }
-    public  void copy(String original,String copied) throws IOException {
-        File file1 = new File(original);
-        File file2 = new File(copied);
-        FileUtils.copyFile(file1, file2);
-    }
+
 }

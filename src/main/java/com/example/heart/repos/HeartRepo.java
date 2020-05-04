@@ -9,5 +9,6 @@ public interface HeartRepo extends CrudRepository<Heart, Long> {
 
     List<Heart> findByText(String text);
     List<Heart> findById(int id);
+    long deleteById(int id);
 
 }
