@@ -21,6 +21,11 @@ public class RegistrationController {
         return "registration";
     }
 
+    @GetMapping("/login-error")
+    public String loginError() {
+        return "login-error";
+    }
+
     @PostMapping("/registration")
     public String addUser(User user, Map<String, Object> model) {
         User userFromDb = userRepo.findByUsername(user.getUsername());
@@ -35,7 +40,7 @@ public class RegistrationController {
             user.setRoles(Collections.singleton(Role.ADMIN));
         }else user.setRoles(Collections.singleton(Role.USER));
         userRepo.save(user);
-
-        return "redirect:/login";
+        model.put("message", "Success!");
+        return "registration";
     }
 }

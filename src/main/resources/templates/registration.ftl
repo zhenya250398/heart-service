@@ -5,4 +5,5 @@
 Add new user
 ${message?if_exists}
 <@l.login "/registration" />
+<a href="/login">login</a>
 </@c.page>

@@ -39,7 +39,7 @@ public class MainController {
 
     @GetMapping("/main")
     public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
-        Iterable<Heart> hearts = heartRepo.findAll();
+        Iterable<Heart> hearts;
 
         if (filter != null && !filter.isEmpty()) {
             hearts = heartRepo.findByText(filter);
@@ -91,6 +91,6 @@ public class MainController {
 
         model.put("hearts", hearts);
 
-        return "main";
+        return "redirect:/main";
     }
 }
