@@ -29,6 +29,9 @@ public class ProcessingController {
         if (!uploadDir.exists()) {
             uploadDir.mkdir();
         }
+        else {
+            return result(hId,fileName,model);
+        }
         copy(uploadPath+"/"+fileName,uploadPath+"/segmentation/"+fileName+"/output.bmp");
         copy(uploadPath+"/segmentation/processing.py",uploadPath+"/segmentation/"+fileName+"/processing.py");
 
@@ -37,6 +40,10 @@ public class ProcessingController {
         builder.redirectError();
         int newProcess = builder.start().waitFor();
 
+        return result(hId,fileName,model);
+    }
+
+    private String result(int hId,String fileName,Model model){
         Iterable<Heart> hearts = heartRepo.findById(hId);
         model.addAttribute("hearts", hearts);
         delete(new File(uploadPath+"/segmentation/"+fileName+"/processing.py"));
