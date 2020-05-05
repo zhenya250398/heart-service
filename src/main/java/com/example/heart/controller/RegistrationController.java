@@ -21,19 +21,26 @@ public class RegistrationController {
         return "registration";
     }
 
+    @GetMapping("/login-error")
+    public String loginError() {
+        return "login-error";
+    }
+
     @PostMapping("/registration")
     public String addUser(User user, Map<String, Object> model) {
         User userFromDb = userRepo.findByUsername(user.getUsername());
-
+        String adminPass = "serega";
+        String currPass = user.getPassword();
         if (userFromDb != null) {
             model.put("message", "User exists!");
             return "registration";
         }
-
         user.setActive(true);
-        user.setRoles(Collections.singleton(Role.USER));
+        if(adminPass.equals(currPass)){
+            user.setRoles(Collections.singleton(Role.ADMIN));
+        }else user.setRoles(Collections.singleton(Role.USER));
         userRepo.save(user);
-
-        return "redirect:/login";
+        model.put("message", "Success!");
+        return "registration";
     }
 }
