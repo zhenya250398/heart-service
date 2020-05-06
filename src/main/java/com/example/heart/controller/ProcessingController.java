@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import static com.example.heart.FilesActions.copy;
 import static com.example.heart.FilesActions.delete;
+import static com.example.heart.VideoToFrames.loadVideo;
 
 @Controller
 public class ProcessingController {
@@ -25,6 +26,7 @@ public class ProcessingController {
 
     @GetMapping("/processing")
     public String registration(@RequestParam("name") String fileName,@RequestParam("id") int hId, Model model) throws IOException, InterruptedException {
+        loadVideo();
         File uploadDir = new File(uploadPath+"/segmentation/"+fileName);
         if (!uploadDir.exists()) {
             uploadDir.mkdir();
