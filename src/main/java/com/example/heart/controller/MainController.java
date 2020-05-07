@@ -65,8 +65,8 @@ public class MainController {
         return "redirect:/main";
     }
 
-    @PostMapping("/main")
-    public String add(
+    @PostMapping("/main/addImage")
+    public String addImage(
             @AuthenticationPrincipal User user,
             @RequestParam String text,
             @RequestParam Map<String, Object> model,
@@ -95,11 +95,42 @@ public class MainController {
                 ImageIO.write(inputImage, "png", newFile);
 
                 heart.setFilename(resultFilename);
+                heart.setFiletype("Изображение");
             }
         }
         if(similarity>=50) {
             heartRepo.save(heart);
         }
+        Iterable<Heart> hearts = heartRepo.findAll();
+
+        model.put("hearts", hearts);
+
+        return "redirect:/main";
+    }
+
+    @PostMapping("/main/addVideo")
+    public String addVideo(
+            @AuthenticationPrincipal User user,
+            @RequestParam String text,
+            @RequestParam Map<String, Object> model,
+            @RequestParam("file") MultipartFile mFile
+    ) throws IOException {
+        Heart heart = new Heart(text, user);
+        if (mFile != null && !mFile.getOriginalFilename().isEmpty()) {
+            File uploadDir = new File(uploadPath);
+
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+
+            String uuidFile = UUID.randomUUID().toString();
+            String resultFilename = uuidFile + "." + mFile.getOriginalFilename();
+            mFile.transferTo(new File(uploadPath + "/" + resultFilename));
+            heart.setFilename(resultFilename);
+            heart.setFiletype("Видео");
+        }
+        heartRepo.save(heart);
+
         Iterable<Heart> hearts = heartRepo.findAll();
 
         model.put("hearts", hearts);
