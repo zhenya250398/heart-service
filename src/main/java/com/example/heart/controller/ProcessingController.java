@@ -11,13 +11,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
 import static com.example.heart.FilesActions.copy;
 import static com.example.heart.FilesActions.delete;
 import static com.example.heart.VideoToFrames.loadVideo;
+import static com.example.heart.imagecheck.Resize.resize;
 
 @Controller
 public class ProcessingController {
@@ -60,13 +64,23 @@ public class ProcessingController {
         copy(uploadPath+"/segmentation/processing.py",uploadPath+"/segmentation/"+fileName+"/processing.py");
 
 //        return result(hId,fileName,model,"video-processing");
-        loadVideo(fileName,uploadPath);
+        int frameNumber = loadVideo(fileName,uploadPath);
         delete(new File(uploadPath+"/segmentation/"+fileName+"/processing.py"));
         delete(new File(uploadPath+"/segmentation/"+fileName+"/output.bmp"));
         delete(new File(uploadPath+"/segmentation/"+fileName+"/output.csv"));
-        AWTSequenceEncoder encoder = AWTSequenceEncoder.createSequenceEncoder(new File(uploadPath + "/filename.mp4"), 30); // 25 fps
-        for (int i=1;i<112;i++) {
+        AWTSequenceEncoder encoder = AWTSequenceEncoder.createSequenceEncoder(new File(uploadPath + "/segmentation/"+fileName+"/output.mp4"), 30); // fps
+        for (int i=1;i<=frameNumber;i++) {
             BufferedImage inputImage = ImageIO.read(new File(uploadPath+"/segmentation/"+fileName+"/output"+i+".bmp"));
+            inputImage = resize(inputImage, 224, 224);
+            Graphics2D g = (Graphics2D) inputImage.getGraphics();
+            g.setColor(Color.BLUE);
+            String line = "";
+            BufferedReader br = new BufferedReader(new FileReader(uploadPath+"/segmentation/"+fileName+"/output"+i+".csv"));
+            while ((line = br.readLine()) != null) {
+                String[] str = line.split(",");
+                g.drawOval(Integer.parseInt(str[1]), Integer.parseInt(str[0]), 1, 1);
+            }
+            br.close();
             encoder.encodeImage(inputImage);
         }
         encoder.finish();

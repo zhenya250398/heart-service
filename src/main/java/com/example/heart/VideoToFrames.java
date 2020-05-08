@@ -14,7 +14,7 @@ import static org.bytedeco.javacpp.avutil.av_log_set_level;
 import static org.bytedeco.javacpp.opencv_imgcodecs.imwrite;
 
 public class VideoToFrames {
-    public static void loadVideo(String fileName,String uploadPath) throws FrameGrabber.Exception {
+    public static int loadVideo(String fileName,String uploadPath) throws FrameGrabber.Exception {
         av_log_set_level(AV_LOG_QUIET);
         OpenCVFrameConverter.ToMat converter = new OpenCVFrameConverter.ToMat();
         FrameGrabber videoGrabber = new FFmpegFrameGrabber(uploadPath+"/"+fileName);		//init
@@ -31,6 +31,7 @@ public class VideoToFrames {
         System.out.println(fps);
 
         int cnt = 0;
+        int frameNumber=0;
         int each = (int) (Math.round(fps / 30));					//count which frame w need to get
         if (each > 1)
             each--;															// for example each 12`th if we have fps = 25
@@ -45,14 +46,14 @@ public class VideoToFrames {
                     if (img != null) {
                         cnt++;
                         if (cnt % each == 0) {
-                            int seconds = (int) (cnt / fps);
+                            frameNumber = (int) (cnt / each);
                             imwrite(uploadPath+"/segmentation/"+fileName+"/output.bmp",img);	//save image
                             ProcessBuilder builder = new ProcessBuilder("python", "processing.py");
                             builder.directory(new File(uploadPath + "/segmentation/" + fileName + "/"));
                             builder.redirectError();
                             int newProcess = builder.start().waitFor();
-                            copy(uploadPath+"/segmentation/"+fileName+"/output.csv",uploadPath+"/segmentation/"+fileName+"/output"+cnt+".csv");
-                            copy(uploadPath+"/segmentation/"+fileName+"/output.bmp",uploadPath+"/segmentation/"+fileName+"/output"+cnt+".bmp");
+                            copy(uploadPath+"/segmentation/"+fileName+"/output.csv",uploadPath+"/segmentation/"+fileName+"/output"+frameNumber+".csv");
+                            copy(uploadPath+"/segmentation/"+fileName+"/output.bmp",uploadPath+"/segmentation/"+fileName+"/output"+frameNumber+".bmp");
                         }
                     }
                 }
@@ -61,5 +62,6 @@ public class VideoToFrames {
             }
         } while (vFrame != null);
         videoGrabber.stop();
+        return frameNumber;
     }
 }
