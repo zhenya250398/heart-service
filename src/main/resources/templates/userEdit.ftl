@@ -1,7 +1,7 @@
 <#import "parts/common.ftl" as c>
 
 <@c.page>
-    Редактор пользователей
+    <div style="margin-top: 150px">Редактор пользователей</div>
 
     <form action="/user" method="post">
         <input type="text" name="username" value="${user.username}">

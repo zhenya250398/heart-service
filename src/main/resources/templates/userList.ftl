@@ -1,7 +1,7 @@
 <#import "parts/common.ftl" as c>
 
 <@c.page>
-    Список пользователей
+    <div style="margin-top: 150px">Список пользователей</div>
 
     <table>
         <thead>

@@ -3,179 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <title>HeartService</title>
+    <script src="http://code.jquery.com/jquery-3.3.1.js" type="text/javascript"></script>
+    <link rel="stylesheet" href = "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 
 </head>
 <body onload="init()">
 <#list hearts! as heart>
-    <img id="loadImg" src="/img/${heart.filename}" style="display:none" alt="alternative">
+<img id="loadImg" src="/img/${heart.filename}" style="display:none" alt="alternative">
 
-<canvas id="can" width="400" height="300" style="position:absolute;top:10%;left:10%;border:2px solid;">
-</canvas>
-<div style="position:absolute;top:2%;left:43%;">Choose color</div>
-<div id = "green" style="position:absolute;top:5%;left:45%;width:10px;height:10px;background:green;" data-color="green" onclick="getColor(this)"></div>
-<div id = "blue" style="position:absolute;top:5%;left:46%;width:10px;height:10px;background:blue;" data-color="blue" onclick="getColor(this)"></div>
-<div style="position:absolute;top:5%;left:47%;width:10px;height:10px;background:red;" data-color="red" onclick="getColor(this)"></div>
-<div style="position:absolute;top:7%;left:45%;width:10px;height:10px;background:yellow;" data-color="yellow" onclick="getColor(this)"></div>
-<div style="position:absolute;top:7%;left:46%;width:10px;height:10px;background:orange;" data-color="orange" onclick="getColor(this)"></div>
-<div style="position:absolute;top:7%;left:47%;width:10px;height:10px;background:black;" data-color="black" onclick="getColor(this)"></div>
-<div style="position:absolute;top:2%;left:40%;">Eraser</div>
-<div style="position:absolute;top:5%;left:40%;width:15px;height:15px;background:white;border:2px solid;" data-color="eraser" onclick="getColor(this)"></div>
-<canvas id="canvasimg" style="display:none;"></canvas>
-<img id="finalImg" style="position:absolute;top:10%;left:52%;display:none;" >
-<input type="button" value="save" id="btn" size="30" onclick="save()" style="position:absolute;top:80%;left:10%;">
-<input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:80%;left:15%;">
+<h3 class="container centerm-2" style="font-family: DM Mono, serif; display: flex; text-align: justify; align-items: center;justify-content: center;">
+    Наша нейросеть определила точки на изображении. Если вас устраивает результат - нажмите Download.<br>
+    Если результат необходимо исправить - тяните точки до достижения нужного эффекта.
+</h3>
+<div class="container-2 m-2" style="display: flex; align-items: center;justify-content: center;">
+
+    <canvas id="canvas" width="400" height="300" style="border:2px solid rgb(25,133,255);;">
+    </canvas>
+    <div class="container-3 m-2" style="align-items: center;justify-content: center;">
+        <h4>Выберите цвет границы</h4>
+        <div class="row">
+            <div class="col-sm">
+                <div id="green" style="height: 2em; width: 5em; background:green;" data-color="green" onclick="ChangeColor(this)"></div>
+                <div id="red" style="height: 2em; width: 5em; background:red;" data-color="red"  onclick="ChangeColor(this)"></div>
+                <div id="yellow" style="height: 2em; width: 5em;background:yellow;" data-color="yellow" onclick="ChangeColor(this)"></div>
+                <div id="orange" style="height: 2em; width: 5em;background:orange;" data-color="orange" onclick="ChangeColor(this)"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<canvas id="canvasImg" style="display:none;"></canvas>
+<img id="finalImg" style="display:none;">
+<div class="btn-group mr-2" style="top:80%;left:10%;">
+    <form method="post" id="myForm">
+        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+        <a id="btn" download="image.png"><button class="btn btn-sm btn-outline-primary my-2"  type="button" onClick="save()">Download</button></a>
+    </form>
+    <input class="btn btn-sm btn-outline-warning my-2" type="button" value="reset" id="reset" size="23" onclick="reset()">
+</div>
+<a class="btn btn-sm btn-outline-primary my-2" style="position: relative; top:80%;left:60%;" href="/main" >Вернуться на страницу загрузок</a>
+<#include "./parts/footer.ftl">
+
 </body>
 
 <script type="text/javascript">
-    var canvas, canvasimg, backgroundImage, finalImg;
-    var	mouseClicked = false;
-    var prevX = 0;
-    var currX = 0;
-    var prevY = 0;
-    var currY = 0;
+    var canvas, canvasImg, backgroundImage, finalImg;
+    var mouseX;
+    var mouseY;
+    var lastX;
+    var lastY;
     var fillStyle = "yellow";
     var globalCompositeOperation = "source-over";
-    var lineWidth = 2;
-    var lines;
-
+    var circles =  [];
+    var isDown = false;
+    var draggingCircle;
 
     function init() {
 
-
         backgroundImage = new Image();
         backgroundImage = document.getElementById('loadImg');
-        canvas = document.getElementById('can');
+        canvas = document.getElementById('canvas');
         canvas.width = backgroundImage.width;
         canvas.height = backgroundImage.height;
         finalImg = document.getElementById('finalImg');
-        canvasimg = document.getElementById('canvasimg');
+        canvasImg = document.getElementById('canvasImg');
         canvas.style.backgroundImage = "url('" + backgroundImage.getAttribute("src") + "')";
-        console.log(document.getElementById('loadImg').getAttribute("src"));
-        canvas.addEventListener("mousemove", handleMouseEvent);
-        canvas.addEventListener("mousedown", handleMouseEvent);
-        canvas.addEventListener("mouseup", handleMouseEvent);
-        canvas.addEventListener("mouseout", handleMouseEvent);
+        //console.log(document.getElementById('loadImg').getAttribute("src"));
+        $("#canvas").mousedown(function (e) {
+            handleMouseDown(e);
+        });
+        $("#canvas").mousemove(function (e) {
+            handleMouseMove(e);
+        });
+        $("#canvas").mouseup(function (e) {
+            handleMouseUp(e);
+        });
+        $("#canvas").mouseout(function (e) {
+            handleMouseUp(e);
+        });
 
-        //Закрасить область по исходным данным output.csv файла
-        var request = new XMLHttpRequest();
-        var path = "/out/${heart.filename}/output.csv";
-        request.open("GET", path, false);
-        request.send();
 
-        var csvData = new Array();
-        var jsonObject = request.responseText.split(/\r?\n|\r/);
-        for (var i = 0; i < jsonObject.length; i++) {
-            csvData.push(jsonObject[i].split(','));
-        }
-        console.log(csvData);
-
-        const ctx = canvas.getContext("2d");
-        ctx.beginPath();
-        ctx.moveTo(csvData[0][1],csvData[0][0]);
-        for(var i = 0; i < csvData.length; i++){
-            if(i !== 0)
-                ctx.lineTo(csvData[i][1],csvData[i][0]);
-        }
-        ctx.lineTo(csvData[0][1],csvData[0][0]);
-        ctx.closePath();
-        ctx.fillStyle = "yellow";
-        ctx.fill();
+        reset();
+        //console.log(circles);
+        drawCanvas();
 
     }
 
-    function getColor(btn) {
+    function ChangeColor(btn) {
         globalCompositeOperation = 'source-over';
-        lineWidth = 2;
-        switch (btn.getAttribute('data-color')) {
-            case "green":
-                fillStyle = "green";
-                break;
-            case "blue":
-                fillStyle = "blue";
-                break;
-            case "red":
-                fillStyle = "red";
-                break;
-            case "yellow":
-                fillStyle = "yellow";
-                break;
-            case "orange":
-                fillStyle = "orange";
-                break;
-            case "black":
-                fillStyle = "black";
-                break;
-            case "eraser":
-                globalCompositeOperation = 'destination-out';
-                fillStyle = "rgba(0,0,0,1)";
-                lineWidth = 14;
-                break;
-        }
-
+        fillStyle = btn.getAttribute('data-color');
+        drawCanvas();
     }
 
-    function draw(dot) {
+
+
+    function drawCanvas() {
         const ctx = canvas.getContext("2d");
-        ctx.beginPath();
-        ctx.globalCompositeOperation = globalCompositeOperation;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        document.getElementById("canvasImg").style.display = "none";
+        finalImg.style.display = "none";
         ctx.height = backgroundImage.height;
         ctx.width = backgroundImage.width;
-        if(dot){
-            ctx.fillStyle = fillStyle;
-            ctx.fillRect(currX, currY, 2, 2);
-        } else {
-            ctx.beginPath();
-            ctx.moveTo(prevX, prevY);
-            ctx.lineTo(currX, currY);
-            ctx.strokeStyle = fillStyle;
-            ctx.lineWidth = lineWidth;
-            ctx.stroke();
-        }
-        ctx.closePath();
+        drawCircles(ctx);
+
     }
 
-    function erase() {
-        if (confirm("Want to clear")) {
-            const ctx = canvas.getContext("2d");
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            document.getElementById("canvasimg").style.display = "none";
-            finalImg.style.display = "none";
+    function drawCircles(ctx) {
+
+        for (var i = 0; i < circles.length; i++) {
+            if(i==0)
+            {
+                ctx.beginPath();
+                ctx.moveTo(circles[i].y, circles[i].x);
+            }
+            else {
+                ctx.lineTo(circles[i].y, circles[i].x);
+                ctx.arc(circles[i].y, circles[i].x, 1, 0, Math.PI * 2);
+
+            }
         }
+        ctx.closePath();
+        ctx.strokeStyle = fillStyle;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    }
+
+    function reset() {
+        circles.splice(0, circles.length);
+        var request = new XMLHttpRequest();
+        const path = "/out/${heart.filename}/output.csv";
+        request.open("GET", path, true);
+
+        request.onreadystatechange = function() {
+            if (request.readyState == 4 && request.status == 200) {
+                console.log(request);
+            }
+        };
+        request.send(null);
+        request.onload = function () {
+            var jsonObject = request.responseText.split(/\r?\n|\r/);
+            for (var i = 0; i < jsonObject.length; i=i+2) {
+                circles.push(
+                    {
+                        x: parseInt(jsonObject[i].split(',')[0]),
+                        y: parseInt(jsonObject[i].split(',')[1]),
+                        //color: "yellow"
+                    });
+            }
+            console.log(circles);
+            drawCanvas();
+        };
+
+
+
     }
 
     function save() {
-        canvas.style.border = "2px solid";
-        canvasimg.width = canvas.width;
-        canvasimg.height = canvas.height;
-        const ctx2 = canvasimg.getContext("2d");
+        canvas.style.border = "1px solid";
+        canvasImg.width = canvas.width;
+        canvasImg.height = canvas.height;
+        const ctx2 = canvasImg.getContext("2d");
         ctx2.drawImage(backgroundImage, 0, 0);
         ctx2.drawImage(canvas, 0, 0);
-        finalImg.src = canvasimg.toDataURL();
-        finalImg.style.display = "inline";
+        finalImg.src = canvasImg.toDataURL();
+        var link = document.getElementById('btn');
+        link.setAttribute('download', 'DynamicEcho.png');
+        link.setAttribute('href', finalImg.src.replace("image/png", "image/octet-stream"));
+
+
+        <#--var response = new XMLHttpRequest();-->
+        <#--var theUrl = "/out/${heart.filename}/save.csv";-->
+        <#--response.open("POST", theUrl, true);-->
+        <#--response.setRequestHeader("Content-type", "application/x-www-form-urlencoded");-->
+        <#--response.onreadystatechange = function() {//Вызывает функцию при смене состояния.-->
+        <#--    if(response.readyState == XMLHttpRequest.DONE && response.status == 200) {-->
+        <#--        // Запрос завершен. Здесь можно обрабатывать результат.-->
+        <#--    }-->
+        <#--}-->
+        <#--response.send(JSON.stringify(circles));-->
+
+
+        //here https://stackoverflow.com/questions/24639335/javascript-console-log-causes-error-synchronous-xmlhttprequest-on-the-main-thr
+
+        var token =  $('input[name="_csrf"]').attr('value');
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: "/out/${heart.filename}/save.csv",
+            contentType: "application/json",
+            data: JSON.stringify(circles),
+            headers: {'X-CSRF-Token': token  }
+        });
     }
 
-    function handleMouseEvent(e) {
-        if (e.type === 'mousedown') {
-            prevX = currX;
-            prevY = currY;
-            currX = e.offsetX;
-            currY = e.offsetY;
-            mouseClicked = true;
-            draw(true);
-        }
-        if (e.type === 'mouseup' || e.type === "mouseout") {
-            mouseClicked = false;
-        }
-        if (e.type === 'mousemove') {
-            if (mouseClicked) {
-                prevX = currX;
-                prevY = currY;
-                currX = e.offsetX;
-                currY = e.offsetY;
-                draw();
+
+
+    function handleMouseDown(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        lastX = parseInt(e.offsetX);
+        lastY = parseInt(e.offsetY);
+        // Проверка нажатия на одну из существующих точек
+        var hit = -1;
+        for (var i = 0; i < circles.length; i++) {
+            var dx = lastX - circles[i].y;
+            var dy = lastY - circles[i].x;
+            if (dx * dx + dy * dy < 4) { // 4 = circle.radius * circle.radius
+                hit = i;
             }
         }
+
+        // Если не зафиксировано нажатие -> возврат
+        // Если нажитие тогда устанавливаем флаг isDown -> true
+        if (hit < 0) {
+            return;
+        }
+        else {
+            draggingCircle = circles[hit];
+            isDown = true;
+        }
     }
+
+    function handleMouseUp(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        isDown = false;
+    }
+
+    function handleMouseMove(e) {
+
+        if (!isDown) {
+            return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        mouseX = parseInt(e.offsetX);
+        mouseY = parseInt(e.offsetY);
+        var dx = mouseX - lastX;
+        var dy = mouseY - lastY;
+
+        draggingCircle.y += dx;
+        draggingCircle.x += dy;
+
+        drawCanvas();
+        lastX = mouseX;
+        lastY = mouseY;
+    }
+
+
 </script>
 </#list>
 </html>
