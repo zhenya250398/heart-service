@@ -27,8 +27,8 @@
                 </div>
                 <div class="form-group">
                     <div class="custom-file">
-                        <input type="file" name="file" id="customFile">
-                        <label class="custom-file-label" for="customFile">Choose file</label>
+                        <input type="file" name="file" id="custom-file-input" >
+                        <label class="custom-file-label" for="custom-file-input">Выберите файл</label>
 
                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                     </div>
@@ -47,8 +47,8 @@
                 </div>
                 <div class="form-group">
                     <div class="custom-file">
-                        <input type="file" name="file" id="customFile">
-                        <label class="custom-file-label" for="customFile">Choose file</label>
+                        <input type="file" name="file" id="custom-file-input">
+                        <label class="custom-file-label" for="custom-file-input">Выберите файл</label>
 
                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                     </div>
@@ -105,16 +105,13 @@ setTimeout(function() { button.disabled = false }, 3000);"  type="submit"class="
             No heart
         </#list>
     </div>
+
+    <script type="application/javascript">
+        $('input[type="file"]').change(function(e){
+            var fileName = e.target.files[0].name;
+            $('.custom-file-label').html(fileName);
+        });
+    </script>
+
 </@c.page>
 
-<script type="text/javascript">
-
-    function processing() {
-        var btnVideo= document.getElementById("btn-processing-video");
-        btnVideo.disabled = true;
-        setTimeout(function() { кнопка.disabled = false }, 1000);
-    }
-    $('#btn').attr('disabled', '');
-    $('#btn').removeAttr('disabled');
-
-</script>

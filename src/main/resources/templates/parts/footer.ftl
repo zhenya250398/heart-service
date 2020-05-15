@@ -1,11 +1,11 @@
-<div style="position:fixed;
-   left:0px;
-   bottom:0px;
-   width:100%;
+<div style=" position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
         background: #007bff; background: linear-gradient(to right, #0062E6, #33AEFF);"
-     class="py-4 flex-md-nowrap nav sticky-bottom">
+     class="py-4 nav">
 
-    <div class="container" style="color: #ffffff; text-align: center; flex: 1 0 auto;  ">
+    <div class="container" style="color: #ffffff; text-align: center;">
         <div class="row" style="
         justify-content: center;
         align-content: center;">

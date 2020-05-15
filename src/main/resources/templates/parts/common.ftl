@@ -1,6 +1,6 @@
 <#macro page>
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="en" style="height: 100%;">
     <head>
         <meta charset="UTF-8">
         <title>Главная</title>
@@ -14,8 +14,10 @@
         <#--    <link rel="icon" href="/main/resources/favicons/favicon-16x16.png" sizes="16x16" type="image/png">-->
         <#--    <link rel="icon" href="/main/resources/favicons/favicon.ico">-->
     </head>
-    <body style="display: flex;height: 100%; flex-direction: column;">
-    <div style="flex-grow: 1">
+    <body style="min-height:100%;
+  position:relative;
+  padding-bottom: 200px;">
+    <div>
 
         <#include "navbar.ftl">
         <div class="container mt-5">

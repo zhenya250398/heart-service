@@ -2,7 +2,6 @@
 
 <@c.page>
     <div style="margin-top: 150px">Редактор пользователей</div>
-
     <form action="/user" method="post">
         <input type="text" name="username" value="${user.username}">
         <input type="text" name="userpass" value="${user.password}">
