@@ -87,8 +87,9 @@ public class MainController {
             File file = convert(mFile,resultFilename);
             BufferedImage inputImage = ImageIO.read(file);
             similarity = compare(file);
+            System.out.println(similarity);
             file.delete();
-            if (similarity>=50) {
+            if (similarity>=80) {
                 inputImage = resize(inputImage, 224, 224);
 
                 File newFile = new File(uploadPath + "/" + resultFilename);
@@ -98,11 +99,10 @@ public class MainController {
                 heart.setFiletype("Изображение");
             }
         }
-        if(similarity>=50) {
+        if(similarity>=80) {
             heartRepo.save(heart);
         }
         Iterable<Heart> hearts = heartRepo.findAll();
-
         model.put("hearts", hearts);
 
         return "redirect:/main";

@@ -17,7 +17,7 @@
         Добавление нового Изображения
     </a>
     <a class="btn btn-primary mt-3" data-toggle="collapse" href="#collapseExampleTwo" role="button" aria-expanded="false" aria-controls="collapseExample">
-        Добавление нового Изображения
+        Добавление нового Видео
     </a>
     <div class="collapse" id="collapseExample">
         <form method="post" action="/main/addImage" enctype="multipart/form-data">
@@ -28,7 +28,7 @@
                 <div class="form-group">
                     <div class="custom-file">
                         <input type="file" name="file" id="custom-file-input" >
-                        <label class="custom-file-label" for="custom-file-input">Выберите файл</label>
+                        <label class="custom-file-output" for="custom-file-input">Выберите файл</label>
 
                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                     </div>
@@ -39,26 +39,28 @@
             </div>
         </form>
     </div>
+
+
+
     <div class="collapse" id="collapseExampleTwo">
         <form method="post" action="/main/addVideo" enctype="multipart/form-data">
             <div class="form-control">
-                <div class="form-group mt-3">
-                    <input type="text" class="form-control" name="text" placeholder="Введите название видео"/>
-                </div>
                 <div class="form-group">
                     <div class="custom-file">
-                        <input type="file" name="file" id="custom-file-input">
-                        <label class="custom-file-label" for="custom-file-input">Выберите файл</label>
-
+                        <input type="text" class="form-control" name="text" placeholder="Введите название видео"/>
+                        <input type="file" name="file"  id="custom-file-input">
                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                     </div>
                 </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Добавить видео</button>
-                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Добавить видео</button>
             </div>
         </form>
     </div>
+
+
+
     <h2 class="mt-3">Список загрузок</h2>
     <div class="row row-cols-1 row-cols-md-2">
         <#list hearts?if_exists as heart>

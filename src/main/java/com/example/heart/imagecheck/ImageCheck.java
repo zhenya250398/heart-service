@@ -38,16 +38,27 @@ public class ImageCheck {
     }
 
     public static String compare_bits(BufferedImage inputImage, int inputImageAvg) {
-        byte[] pixelWeight = ((DataBufferByte) inputImage.getRaster().getDataBuffer()).getData();
-        int l = pixelWeight.length;
+        int width = inputImage.getWidth();
+        int height = inputImage.getHeight();
+        double[][] greyscale = new double[width][height];
         String bitResult = "";
-        for (int i = 0; i < l; i++) {
-
-            if (pixelWeight[i] > inputImageAvg)
-                bitResult += "1";
-            else
-                bitResult += "0";
-        }
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++) {
+                int p = inputImage.getRGB(i, j);
+            
+                int r = (p >> 16) & 0xff;
+            
+                int g = (p >> 8) & 0xff;
+            
+                int b = p & 0xff;
+            
+                greyscale[i][j] = 0.299 * r + 0.587 * g + 0.114 * b;
+                if (greyscale[i][j] > inputImageAvg)
+                    bitResult += "1";
+                else
+                    bitResult += "0";
+            
+            }
         return bitResult;
     }
 
@@ -86,7 +97,7 @@ public class ImageCheck {
             //побитное сравнение двух хэшей
             int hammingDistance = hammingDifference(bitHash1, bitHash2);
 
-            return (192 - hammingDistance) * 100 / 192;
+            return (64 - hammingDistance) * 100 / 64;
         } catch (IOException e) {
             System.out.println("Ошибка resize'а изображения");
             e.printStackTrace();
