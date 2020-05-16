@@ -14,6 +14,7 @@ public class Heart {
     @JoinColumn(name = "user_id")
     private User author;
     private String filename;
+    private String filetype;
 
     public Heart() {
     }
@@ -57,5 +58,13 @@ public class Heart {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public String getFiletype() {
+        return filetype;
+    }
+
+    public void setFiletype(String filetype) {
+        this.filetype = filetype;
     }
 }
