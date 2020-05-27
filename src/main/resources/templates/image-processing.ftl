@@ -23,12 +23,16 @@
         <h4>Выберите цвет границы</h4>
         <div class="row">
             <div class="col-sm">
-                <div id="green" style="height: 2em; width: 5em; background:green;" data-color="green" onclick="ChangeColor(this)"></div>
-                <div id="red" style="height: 2em; width: 5em; background:red;" data-color="red"  onclick="ChangeColor(this)"></div>
-                <div id="yellow" style="height: 2em; width: 5em;background:yellow;" data-color="yellow" onclick="ChangeColor(this)"></div>
-                <div id="orange" style="height: 2em; width: 5em;background:orange;" data-color="orange" onclick="ChangeColor(this)"></div>
+                <div id="light_green" style="height: 2em; width: 5em; background:#66ff00;" data-color="#66ff00" onclick="ChangeColor(this)"></div>
+                <div id="red" style="height: 2em; width: 5em; background:#ff2400;" data-color="#ff2400" onclick="ChangeColor(this)"></div>
+                <div id="yellow" style="height: 2em; width: 5em;background:#ffff00;" data-color="yellow" onclick="ChangeColor(this)"></div>
+                <div id="blue" style="height: 2em; width: 5em;background:#00ccff;" data-color="#00ccff" onclick="ChangeColor(this)"></div>
             </div>
         </div>
+    </div>
+    <div class = "container-4 m-2">
+        <h5>S фигуры усл. ед.</h5>
+        <div class="areaFigure"></div>
     </div>
 </div>
 
@@ -40,7 +44,7 @@
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
         <a id="btn" download="image.png"><button class="btn btn-sm btn-outline-primary my-2"  type="button" onClick="save()">Download</button></a>
     </form>
-    <input class="btn btn-sm btn-outline-warning my-2" type="button" value="reset" id="reset" size="23" onclick="reset()">
+    <input class="btn btn-sm btn-outline-warning my-2" type="button" value="reset points" id="reset" size="23" onclick="reset()">
 </div>
 <a class="btn btn-sm btn-outline-primary my-2" style="position: relative; top:80%;left:60%;" href="/main" >Вернуться на страницу загрузок</a>
 <#include "./parts/footer.ftl">
@@ -58,6 +62,7 @@
     var circles =  [];
     var isDown = false;
     var draggingCircle;
+    var areaTotal;
 
     function init() {
 
@@ -69,6 +74,8 @@
         finalImg = document.getElementById('finalImg');
         canvasImg = document.getElementById('canvasImg');
         canvas.style.backgroundImage = "url('" + backgroundImage.getAttribute("src") + "')";
+        areaTotal = document.querySelector(".areaFigure");
+
         //console.log(document.getElementById('loadImg').getAttribute("src"));
         $("#canvas").mousedown(function (e) {
             handleMouseDown(e);
@@ -127,6 +134,7 @@
         ctx.strokeStyle = fillStyle;
         ctx.lineWidth = 1;
         ctx.stroke();
+        //console.log(areaTotal);
     }
 
     function reset() {
@@ -152,11 +160,30 @@
                     });
             }
             console.log(circles);
+            calculateArea();
             drawCanvas();
         };
+    }
 
+    function calculateArea() {
 
-
+        var tempAreaTotal = 0.0;
+        for (var i=0; i < circles.length-3; i++)
+        {
+            if(!isNaN(circles[i].x) && !isNaN(circles[i].y) && !isNaN(circles[i+1].x) && !isNaN(circles[i+1].y))
+            {
+                tempAreaTotal += (circles[i].x*circles[i+1].y) - (circles[i+1].x*circles[i].y);
+                console.log(tempAreaTotal);
+            }
+            else
+                {
+                    console.log("found NAN for index:", i);
+                }
+        }
+        tempAreaTotal = 0.5 * Math.abs(tempAreaTotal + circles[circles.length-2].x*circles[0].y - circles[0].x*circles[circles.length-2].y);
+        console.log(tempAreaTotal);
+        console.log(circles);
+        areaTotal.innerHTML = tempAreaTotal;
     }
 
     function save() {
@@ -194,6 +221,7 @@
             url: "/out/${heart.filename}/save.csv",
             contentType: "application/json",
             data: JSON.stringify(circles),
+            success: success,
             headers: {'X-CSRF-Token': token  }
         });
     }
@@ -246,7 +274,7 @@
 
         draggingCircle.y += dx;
         draggingCircle.x += dy;
-
+        calculateArea();
         drawCanvas();
         lastX = mouseX;
         lastY = mouseY;
