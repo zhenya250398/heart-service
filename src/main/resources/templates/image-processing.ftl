@@ -122,11 +122,11 @@
             if(i==0)
             {
                 ctx.beginPath();
-                ctx.moveTo(circles[i].y, circles[i].x);
+                ctx.moveTo(2*circles[i].y, 2*circles[i].x);
             }
             else {
-                ctx.lineTo(circles[i].y, circles[i].x);
-                ctx.arc(circles[i].y, circles[i].x, 1, 0, Math.PI * 2);
+                ctx.lineTo(2*circles[i].y, 2*circles[i].x);
+                ctx.arc(2*circles[i].y, 2*circles[i].x, 1.5, 0, Math.PI * 2);
 
             }
         }
@@ -134,7 +134,6 @@
         ctx.strokeStyle = fillStyle;
         ctx.lineWidth = 1;
         ctx.stroke();
-        //console.log(areaTotal);
     }
 
     function reset() {
@@ -151,7 +150,7 @@
         request.send(null);
         request.onload = function () {
             var jsonObject = request.responseText.split(/\r?\n|\r/);
-            for (var i = 0; i < jsonObject.length; i=i+2) {
+            for (var i = 0; i < jsonObject.length; i=i+3) {
                 circles.push(
                     {
                         x: parseInt(jsonObject[i].split(',')[0]),
@@ -236,9 +235,9 @@
         // Проверка нажатия на одну из существующих точек
         var hit = -1;
         for (var i = 0; i < circles.length; i++) {
-            var dx = lastX - circles[i].y;
-            var dy = lastY - circles[i].x;
-            if (dx * dx + dy * dy < 4) { // 4 = circle.radius * circle.radius
+            var dx = lastX - 2*circles[i].y;
+            var dy = lastY - 2*circles[i].x;
+            if (dx * dx + dy * dy < 8) { // 8 = circle.radius * circle.radius
                 hit = i;
             }
         }
@@ -272,8 +271,8 @@
         var dx = mouseX - lastX;
         var dy = mouseY - lastY;
 
-        draggingCircle.y += dx;
-        draggingCircle.x += dy;
+        draggingCircle.y += dx/2;
+        draggingCircle.x += dy/2;
         calculateArea();
         drawCanvas();
         lastX = mouseX;

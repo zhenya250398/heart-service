@@ -91,7 +91,7 @@ public class ProcessingController {
         AWTSequenceEncoder encoder = AWTSequenceEncoder.createSequenceEncoder(new File(uploadPath + "/segmentation/"+fileName+"/output.mp4"), 30); // fps
         for (int i=1;i<=frameNumber;i++) {
             BufferedImage inputImage = ImageIO.read(new File(uploadPath+"/segmentation/"+fileName+"/output"+i+".bmp"));
-            inputImage = resize(inputImage, 224, 224);
+            inputImage = resize(inputImage, 448, 448); //224, 224
             Graphics2D g = (Graphics2D) inputImage.getGraphics();
             g.setColor(Color.BLUE);
             String line = "";

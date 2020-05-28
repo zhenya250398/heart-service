@@ -106,7 +106,7 @@ public class MainController {
             System.out.println(similarity);
             file.delete();
             if (similarity>=0) {
-                inputImage = resize(inputImage, 224, 224);
+                inputImage = resize(inputImage, 448, 448); //224,224
 
                 File newFile = new File(uploadPath + "/" + resultFilename);
                 ImageIO.write(inputImage, "png", newFile);

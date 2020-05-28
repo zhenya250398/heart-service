@@ -2,7 +2,7 @@
 
     <form action="${path}" method="post">
         <#if !isRegisterForm><div style="margin-top: 150px">Вход в систему</div></#if>
-        <#if isRegisterForm><div style="margin-top: 100px">Регистрация</div></#if>
+        <#if isRegisterForm><div style="margin-top: 150px">Регистрация</div></#if>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Username:</label>
             <div class="col-sm-4">
