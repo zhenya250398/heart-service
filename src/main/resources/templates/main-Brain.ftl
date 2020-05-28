@@ -6,7 +6,7 @@
     <h1 style="margin-top: 150px">Поиск по загрузкам</h1>
     <div class="form-row mt-3">
         <div class="form-group col-md-6">
-            <form method="get" action="/main" class="form-inline">
+            <form method="get" action="/mainBrain" class="form-inline">
                 <input type="text" name="filter" class="form-control" value="${filter?if_exists}">
                 <button type="submit" class="btn btn-primary ml-2">Найти</button>
             </form>
@@ -29,7 +29,7 @@
                     <div class="custom-file">
                         <input type="file" name="file" id="custom-file-input" >
                         <label class="custom-file-output" for="custom-file-input">Выберите файл</label>
-                        <input type="hidden" name="objType"  value="Heart">
+                        <input type="hidden" name="objType"  value="Brain">
                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                     <div class="custom-file">
                         <input type="text" class="form-control" name="text" placeholder="Введите название видео"/>
                         <input type="file" name="file"  id="custom-file-input">
-                        <input type="hidden" name="objType"  value="Heart">
+                        <input type="hidden" name="objType"  value="Brain">
                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                         <#if heart.filename??>
                             <#if heart.filetype?if_exists=="Изображение">
                                 <img class="card-img-top" src="/img/${heart.filename}">
-                                <form method="get" action="/imageProcessing">
+                                <form method="get" action="/imageBrainProcessing">
                                     <input type="hidden" name="id" value="${heart.id}"/>
                                     <input type="hidden" name="name" value="${heart.filename}"/>
                                     <button type="submit" onclick="button.disabled = true;
@@ -86,7 +86,7 @@ setTimeout(function() { button.disabled = false }, 3000);" class="btn btn-primar
                                 <video style="width: 20em;height: 20em;">
                                     <source class="card-img-top" src="/img/${heart.filename}">
                                 </video>
-                                <form method="get" action="/videoProcessing">
+                                <form method="get" action="/videoBrainProcessing">
                                     <input type="hidden" name="id" value="${heart.id}"/>
                                     <input type="hidden" name="name" value="${heart.filename}"/>
                                     <button id="btn-processing-video" onclick="button.disabled = true;

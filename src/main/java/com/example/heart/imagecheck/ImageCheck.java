@@ -71,7 +71,7 @@ public class ImageCheck {
     }
 
     public static int compare(File file){
-        File etalonFile = new File("src/main/resources/etalon-image/etalon.jpg");
+        File etalonFile = new File("C:/app/etalon.jpg");
 //      File etalonFile = new File("/uploadImages/etalon-image/etalon.jpg");//for deploy
         try {
 

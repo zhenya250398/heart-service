@@ -46,12 +46,27 @@ public class MainController {
         if (filter != null && !filter.isEmpty()) {
             hearts = heartRepo.findByText(filter);
         } else {
-            hearts = heartRepo.findAll();
+            hearts = heartRepo.findByObjecttype("Heart");
         }
 
         model.addAttribute("hearts", hearts);
         model.addAttribute("filter", filter);
         return "main";
+    }
+
+    @GetMapping("/mainBrain")
+    public String mainBrain(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
+        Iterable<Heart> hearts;
+
+        if (filter != null && !filter.isEmpty()) {
+            hearts = heartRepo.findByText(filter);
+        } else {
+            hearts = heartRepo.findByObjecttype("Brain");
+        }
+
+        model.addAttribute("hearts", hearts);
+        model.addAttribute("filter", filter);
+        return "main-Brain";
     }
 
     @PostMapping("/delete")
@@ -69,6 +84,7 @@ public class MainController {
     public String addImage(
             @AuthenticationPrincipal User user,
             @RequestParam String text,
+            @RequestParam("objType") String objType,
             @RequestParam Map<String, Object> model,
             @RequestParam("file") MultipartFile mFile
     ) throws IOException {
@@ -89,7 +105,7 @@ public class MainController {
             similarity = compare(file);
             System.out.println(similarity);
             file.delete();
-            if (similarity>=80) {
+            if (similarity>=0) {
                 inputImage = resize(inputImage, 224, 224);
 
                 File newFile = new File(uploadPath + "/" + resultFilename);
@@ -97,15 +113,18 @@ public class MainController {
 
                 heart.setFilename(resultFilename);
                 heart.setFiletype("Изображение");
+                heart.setObjecttype(objType);
             }
         }
-        if(similarity>=80) {
+        if(similarity>=0) {
             heartRepo.save(heart);
         }
         Iterable<Heart> hearts = heartRepo.findAll();
         model.put("hearts", hearts);
 
-        return "redirect:/main";
+        if(objType.equals("Heart")) {
+            return "redirect:/main";
+        }else return "redirect:/mainBrain";
     }
 
     @PostMapping("/main/addVideo")
@@ -113,6 +132,7 @@ public class MainController {
             @AuthenticationPrincipal User user,
             @RequestParam String text,
             @RequestParam Map<String, Object> model,
+            @RequestParam("objType") String objType,
             @RequestParam("file") MultipartFile mFile
     ) throws IOException {
         Heart heart = new Heart(text, user);
@@ -128,13 +148,16 @@ public class MainController {
             mFile.transferTo(new File(uploadPath + "/" + resultFilename));
             heart.setFilename(resultFilename);
             heart.setFiletype("Видео");
+            heart.setObjecttype(objType);
+            heartRepo.save(heart);
         }
-        heartRepo.save(heart);
 
         Iterable<Heart> hearts = heartRepo.findAll();
 
         model.put("hearts", hearts);
 
-        return "redirect:/main";
+        if(objType.equals("Heart")) {
+            return "redirect:/main";
+        }else return "redirect:/mainBrain";
     }
 }

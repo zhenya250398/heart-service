@@ -15,6 +15,7 @@ public class Heart {
     private User author;
     private String filename;
     private String filetype;
+    private String objecttype;
 
     public Heart() {
     }
@@ -66,5 +67,13 @@ public class Heart {
 
     public void setFiletype(String filetype) {
         this.filetype = filetype;
+    }
+
+    public String getObjecttype() {
+        return objecttype;
+    }
+
+    public void setObjecttype(String objecttype) {
+        this.objecttype = objecttype;
     }
 }

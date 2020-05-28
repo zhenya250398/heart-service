@@ -51,6 +51,26 @@ public class ProcessingController {
         return result(hId,fileName,model,"image-processing");
     }
 
+    @GetMapping("/imageBrainProcessing")
+    public String imageBrainProcessing(@RequestParam("name") String fileName,@RequestParam("id") int hId, Model model) throws IOException, InterruptedException {
+        File uploadDir = new File(uploadPath+"/segmentation/"+fileName);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdir();
+        }
+        else {
+            return result(hId,fileName,model,"image-processing");
+        }
+        copy(uploadPath+"/"+fileName,uploadPath+"/segmentation/"+fileName+"/output.bmp");
+        copy(uploadPath+"/segmentation/processingBrain.py",uploadPath+"/segmentation/"+fileName+"/processing.py");
+
+        ProcessBuilder builder = new ProcessBuilder("python", "processing.py");
+        builder.directory(new File(uploadPath + "/segmentation/" + fileName + "/"));
+        builder.redirectError();
+        int newProcess = builder.start().waitFor();
+
+        return result(hId,fileName,model,"image-processing");
+    }
+
     @GetMapping("/videoProcessing")
     public String videoProcessing(@RequestParam("name") String fileName,@RequestParam("id") int hId, Model model) throws IOException, InterruptedException {
         File uploadDir = new File(uploadPath+"/segmentation/"+fileName);
