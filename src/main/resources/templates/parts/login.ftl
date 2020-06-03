@@ -1,8 +1,8 @@
 <#macro login path isRegisterForm>
 
     <form action="${path}" method="post">
-        <#if !isRegisterForm><div style="margin-top: 150px">Вход в систему</div></#if>
-        <#if isRegisterForm><div style="margin-top: 150px">Регистрация</div></#if>
+        <#if !isRegisterForm><div style="margin-top: 150px; margin-bottom: 20px"><h1>Вход в систему</h1></div></#if>
+        <#if isRegisterForm><div style="margin-top: 150px; margin-bottom: 20px"><h1>Регистрация</h1></div></#if>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Username:</label>
             <div class="col-sm-4">
@@ -18,8 +18,8 @@
         </div>
 
         <input type="hidden" name="_csrf" value="${_csrf.token}" />
-        <#if !isRegisterForm><a href="/registration">Добавить нового пользователя</a></#if>
-        <#if isRegisterForm><a href="/login">Перейти к авторизации</a></#if>
+        <#if !isRegisterForm><a href="/registration" style="color:white">Добавить нового пользователя</a></#if>
+        <#if isRegisterForm><a href="/login" style="color:white">Перейти к авторизации</a></#if>
         <button class="btn btn-primary m-2" type="submit"><#if isRegisterForm>Create<#else>Sign In</#if></button>
 
     </form>

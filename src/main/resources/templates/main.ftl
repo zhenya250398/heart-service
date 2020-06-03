@@ -67,7 +67,7 @@
         <#list hearts?if_exists as heart>
             <#if heart.author.id == currentUserId>
 
-                <div class="card m-2" style="border: 1px solid rgb(25,133,255); width: 20em;">
+                <div class="card m-2" style="border: 1px solid rgb(25,133,255); width: 20em; color: black">
                     <b>${heart.id}</b>
                     <span>${heart.text}</span>
                     <strong>Тип файла: ${heart.filetype?if_exists}</strong>

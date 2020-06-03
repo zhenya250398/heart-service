@@ -186,43 +186,30 @@
     }
 
     function save() {
-        canvas.style.border = "1px solid";
-        canvasImg.width = canvas.width;
-        canvasImg.height = canvas.height;
-        const ctx2 = canvasImg.getContext("2d");
-        ctx2.drawImage(backgroundImage, 0, 0);
-        ctx2.drawImage(canvas, 0, 0);
+        // canvas.style.border = "1px solid";
+        // canvasImg.width = canvas.width;
+        // canvasImg.height = canvas.height;
+        // const ctx2 = canvasImg.getContext("2d");
+        // ctx2.drawImage(backgroundImage, 0, 0);
+        // ctx2.drawImage(canvas, 0, 0);
         finalImg.src = canvasImg.toDataURL();
         var link = document.getElementById('btn');
         link.setAttribute('download', 'DynamicEcho.png');
         link.setAttribute('href', finalImg.src.replace("image/png", "image/octet-stream"));
 
 
-        <#--var response = new XMLHttpRequest();-->
-        <#--var theUrl = "/out/${heart.filename}/save.csv";-->
-        <#--response.open("POST", theUrl, true);-->
-        <#--response.setRequestHeader("Content-type", "application/x-www-form-urlencoded");-->
-        <#--response.onreadystatechange = function() {//Вызывает функцию при смене состояния.-->
-        <#--    if(response.readyState == XMLHttpRequest.DONE && response.status == 200) {-->
-        <#--        // Запрос завершен. Здесь можно обрабатывать результат.-->
-        <#--    }-->
-        <#--}-->
-        <#--response.send(JSON.stringify(circles));-->
 
+        <#--var token =  $('input[name="_csrf"]').attr('value');-->
 
-        //here https://stackoverflow.com/questions/24639335/javascript-console-log-causes-error-synchronous-xmlhttprequest-on-the-main-thr
-
-        var token =  $('input[name="_csrf"]').attr('value');
-
-        $.ajax({
-            async: true,
-            type: "POST",
-            url: "/out/${heart.filename}/save.csv",
-            contentType: "application/json",
-            data: JSON.stringify(circles),
-            success: success,
-            headers: {'X-CSRF-Token': token  }
-        });
+        <#--$.ajax({-->
+        <#--    async: true,-->
+        <#--    type: "POST",-->
+        <#--    url: "/out/${heart.filename}/save.csv",-->
+        <#--    contentType: "application/json",-->
+        <#--    data: JSON.stringify(circles),-->
+        <#--    success: success,-->
+        <#--    headers: {'X-CSRF-Token': token  }-->
+        <#--});-->
     }
 
 

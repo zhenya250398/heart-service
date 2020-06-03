@@ -15,12 +15,15 @@
         <#--    <link rel="icon" href="/main/resources/favicons/favicon.ico">-->
     </head>
     <body style="min-height:100%;
-  position:relative;
-  padding-bottom: 200px;">
+    position:relative;
+    padding-bottom: 200px;
+    background: radial-gradient(#228ef4 15%, transparent 16%) 0 0, radial-gradient(#228cf2 15%, transparent 16%) 8px 8px, radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px, radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
+    background-color: #33aeff;
+    background-size: 16px 16px;">
     <div>
 
         <#include "navbar.ftl">
-        <div class="container mt-5">
+        <div class="container mt-5" style="color:white">
             <#nested>
         </div>
     </div>
