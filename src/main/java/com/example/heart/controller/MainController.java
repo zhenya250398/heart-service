@@ -71,13 +71,19 @@ public class MainController {
 
     @PostMapping("/delete")
     @Transactional
-    public String deleteImage(@RequestParam("name") String fileName,@RequestParam("id") int hId) {
+    public String deleteImage(
+            @RequestParam("objType") String objType,
+            @RequestParam("name") String fileName,
+            @RequestParam("id") int hId
+    ) {
         long del = heartRepo.deleteById(hId);
         File inputFile = new File(uploadPath+"/"+fileName);
         File outputFile = new File(uploadPath+"/segmentation/"+fileName);
         if(inputFile!=null) delete(inputFile);
         if(outputFile!=null) delete(outputFile);
-        return "redirect:/main";
+        if(objType.equals("Heart")) {
+            return "redirect:/main";
+        }else return "redirect:/mainBrain";
     }
 
     @PostMapping("/main/addImage")

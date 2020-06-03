@@ -13,7 +13,7 @@
         <#if isAdmin>
             <li class="nav-item">
                 Настройки Администратора
-                <a class="nav-link"  href="/userList">UserList</a>
+                <a class="nav-link"  href="/user">UserList</a>
             </li>
         </#if>
     </ul>

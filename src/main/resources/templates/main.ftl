@@ -99,13 +99,14 @@ setTimeout(function() { button.disabled = false }, 3000);"  type="submit"class="
                             <input type="hidden" name="id" value="${heart.id}"/>
                             <input type="hidden" name="name" value="${heart.filename}"/>
                             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                            <input type="hidden" name="objType"  value="Heart">
                             <button type="submit"class="btn btn-primary m-3">Удалить</button>
                         </form>
                     </div>
                 </div>
             </#if>
         <#else>
-            No heart
+            Не загружено ни одного изображения сердца
         </#list>
     </div>
 

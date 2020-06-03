@@ -79,7 +79,9 @@ public class ProcessingController {
         }
         else {
 //            return result(hId,fileName,model,"video-processing");
-            return "redirect:/main";
+            Iterable<Heart> hearts = heartRepo.findById(hId);
+            model.addAttribute("hearts", hearts);
+            return "video-processing";
         }
         copy(uploadPath+"/segmentation/processing.py",uploadPath+"/segmentation/"+fileName+"/processing.py");
 
@@ -93,18 +95,26 @@ public class ProcessingController {
             BufferedImage inputImage = ImageIO.read(new File(uploadPath+"/segmentation/"+fileName+"/output"+i+".bmp"));
             inputImage = resize(inputImage, 448, 448); //224, 224
             Graphics2D g = (Graphics2D) inputImage.getGraphics();
-            g.setColor(Color.BLUE);
-            String line = "";
+            g.setColor(Color.YELLOW);
             BufferedReader br = new BufferedReader(new FileReader(uploadPath+"/segmentation/"+fileName+"/output"+i+".csv"));
+            String line = br.readLine();
+            String[] str0 = line.split(",");
+            int x =Integer.parseInt(str0[1])*2;
+            int y =Integer.parseInt(str0[0])*2;
             while ((line = br.readLine()) != null) {
                 String[] str = line.split(",");
-                g.drawOval(Integer.parseInt(str[1]), Integer.parseInt(str[0]), 1, 1);
+                g.drawOval(Integer.parseInt(str[1])*2, Integer.parseInt(str[0])*2, 1, 1);
+                g.drawLine(x,y,Integer.parseInt(str[1])*2,Integer.parseInt(str[0])*2);
+                x =Integer.parseInt(str[1])*2;
+                y =Integer.parseInt(str[0])*2;
             }
             br.close();
             encoder.encodeImage(inputImage);
         }
         encoder.finish();
-        return "redirect:/main";
+        Iterable<Heart> hearts = heartRepo.findById(hId);
+        model.addAttribute("hearts", hearts);
+        return "video-processing";
     }
 
     private String result(int hId,String fileName,Model model,String type){

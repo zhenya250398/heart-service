@@ -32,7 +32,7 @@ public class VideoToFrames {
 
         int cnt = 0;
         int frameNumber=0;
-        int each = (int) (Math.round(fps / 30));					//count which frame w need to get
+        int each = (int) (Math.round(fps / 2));					//count which frame w need to get
         if (each > 1)
             each--;															// for example each 12`th if we have fps = 25
         // that mean we have 2 image per second
