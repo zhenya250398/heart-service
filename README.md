@@ -1,2 +1,2 @@
-# sweater
+# Heart Service
 Spring Boot learning
